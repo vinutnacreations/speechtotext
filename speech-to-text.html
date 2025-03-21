@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech-to-Text</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        #output { border: 1px solid #ccc; padding: 10px; width: 80%; margin: 10px auto; min-height: 50px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Speech-to-Text Converter</h2>
+    <button onclick="startRecognition()">Start Speech Recognition</button>
+    <button onclick="stopRecognition()">Stop</button>
+    <p id="output">Your speech will appear here...</p>
+
+    <script>
+        let recognition;
+        function startRecognition() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert('Your browser does not support Speech-to-Text. Try Google Chrome.');
+                return;
+            }
+            
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            
+            recognition.onresult = function(event) {
+                let transcript = '';
+                for (let i = 0; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                document.getElementById('output').textContent = transcript;
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+            };
+
+            recognition.start();
+        }
+        
+        function stopRecognition() {
+            if (recognition) {
+                recognition.stop();
+            }
+        }
+    </script>
+</body>
+</html>
